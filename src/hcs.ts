@@ -1,8 +1,7 @@
-import type { ClientRequestOptions, Hono } from "hono";
 import { hc } from "hono/client";
-import type { UnionToIntersection } from "hono/utils/types";
 import superjson from "superjson";
-import { Callback, Client } from "./types/hc";
+
+export type Callback = (opts: { path: string[]; args: any[] }) => unknown;
 
 const createProxy = (callback: Callback, path: string[]) => {
   const proxy: unknown = new Proxy(() => {}, {
@@ -22,10 +21,7 @@ const createProxy = (callback: Callback, path: string[]) => {
   return proxy;
 };
 
-export const hcs = <T extends Hono<any, any, any>>(
-  baseUrl: string,
-  options?: ClientRequestOptions
-) =>
+export const hcs: typeof hc = (baseUrl, options) =>
   createProxy(async ({ path, args }) => {
     let client: any = hc(baseUrl, options);
 
@@ -33,9 +29,9 @@ export const hcs = <T extends Hono<any, any, any>>(
       client = client[part];
     }
 
-    const res: Response = await client(...args);
+    const res = await client(...args);
 
-    if (res.headers.get("x-superjson") === "true") {
+    if (res instanceof Response && res.headers.get("x-superjson") === "true") {
       res.json = async () => {
         const text = await res.text();
         return superjson.parse(text);
@@ -43,4 +39,4 @@ export const hcs = <T extends Hono<any, any, any>>(
     }
 
     return res;
-  }, []) as UnionToIntersection<Client<T>>;
+  }, []) as any;
