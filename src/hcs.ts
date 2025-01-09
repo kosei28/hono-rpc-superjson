@@ -22,21 +22,29 @@ const createProxy = (callback: Callback, path: string[]) => {
 };
 
 export const hcs: typeof hc = (baseUrl, options) =>
-  createProxy(async ({ path, args }) => {
+  createProxy(({ path, args }) => {
     let client: any = hc(baseUrl, options);
 
     for (const part of path) {
       client = client[part];
     }
 
-    const res = await client(...args);
+    const result = client(...args);
 
-    if (res instanceof Response && res.headers.get("x-superjson") === "true") {
-      res.json = async () => {
-        const text = await res.text();
-        return superjson.parse(text);
-      };
+    if (result instanceof Promise) {
+      return result.then(async (res) => {
+        if (
+          res instanceof Response &&
+          res.headers.get("x-superjson") === "true"
+        ) {
+          res.json = async () => {
+            const text = await res.text();
+            return superjson.parse(text);
+          };
+        }
+        return res;
+      });
     }
 
-    return res;
+    return result;
   }, []) as any;
