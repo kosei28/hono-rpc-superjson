@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "serve": "tsx src/server.ts",
+    "fetch": "tsx src/client.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "hono": "^4.6.16",
+    "superjson": "^2.2.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}
