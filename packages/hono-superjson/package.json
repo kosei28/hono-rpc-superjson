@@ -1,0 +1,11 @@
+{
+  "name": "hono-superjson",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts"
+  },
+  "dependencies": {
+    "hono": "^4.6.16",
+    "superjson": "^2.2.2"
+  }
+}

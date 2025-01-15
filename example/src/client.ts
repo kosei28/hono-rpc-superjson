@@ -1,4 +1,4 @@
-import { hcs } from "./hcs";
+import { hcs } from "hono-superjson/client";
 import { AppRoute } from "./server";
 
 const client = hcs<AppRoute>("http://localhost:8787/");

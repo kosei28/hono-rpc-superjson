@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { jsonS } from "./hono-superjson";
+import { jsonS } from "hono-superjson";
 import { serve } from "@hono/node-server";
 
 export const app = new Hono();
