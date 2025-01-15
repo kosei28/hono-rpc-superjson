@@ -3,12 +3,12 @@ import { AppRoute } from "./server";
 
 const client = hcs<AppRoute>("http://localhost:8787/");
 
-async function getCurrentDate() {
-  const url = client.currentDate.$url();
-  const res = await client.currentDate.$get();
-  const data = await res.json();
+const url = client.currentDate.$url();
+console.log("request url:", url);
 
-  console.log(url, data);
-}
+const res = await client.currentDate.$get();
+const data = await res.json();
+console.log("response data:", data);
 
-getCurrentDate();
+const output = document.getElementById("output")!;
+output.textContent = `The current date is ${data.date}`;
